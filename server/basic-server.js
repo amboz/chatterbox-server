@@ -1,6 +1,7 @@
 /* Import node's http module: */
 var http = require('http');
-
+//require(...) is the same as exports; access prop on exports
+var handleRequest = require('./request-handler').requestHandler;
 
 // Every server needs to listen on a port with a unique number. The
 // standard port for HTTP servers is port 80, but that port is
