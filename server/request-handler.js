@@ -5,6 +5,7 @@ const querystring = require('querystring');
 
 //below is our "db"
 const responseBody = {results: []};
+let objectId = 1;
 var defaultCorsHeaders = {
   'access-control-allow-origin': '*',
   'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -40,6 +41,7 @@ var requestHandler = function(request, response) {
     response.end(JSON.stringify(responseBody));
   } else if (request.method === 'POST' && pathname === '/classes/messages') {
     const statusCode = 201;
+    // headers['Content-Type'] = 'application/json';
     //need to write changes to our results array with POST request
     //create body string with each chunk
     //writeHead and end on 'end' to ensure all data is processed (handle async nature of POST request)
@@ -53,11 +55,14 @@ var requestHandler = function(request, response) {
       console.log(body);
       //update the "db" with parsed data
       // responseBody.results.push(querystring.parse(body));
-      responseBody.results.push(JSON.parse(body));
+      let obj = JSON.parse(body);
+      obj.objectId = objectId++;
+      responseBody.results.push(obj);
       console.log(responseBody.results);
       response.writeHead(statusCode, headers);
       //end the request
-      response.end();
+      response.end('{"success": "hell yeag"}');
+      // response.end();
     });
   } else if (request.method === 'OPTIONS') {
     const statusCode = 200;
