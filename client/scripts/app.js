@@ -43,6 +43,8 @@ var app = {
       url: app.server,
       type: 'POST',
       data: JSON.stringify(message),
+      //must add content type below to match header in POST req to match body-parser specs
+      contentType: 'application/json',
       success: function (data) {
         // Clear messages input
         app.$message.val('');

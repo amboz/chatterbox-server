@@ -73,7 +73,6 @@ var requestHandler = function(request, response) {
     response.writeHead(statusCode, headers);
     response.end();
   }
-
 };
 
 exports.requestHandler = requestHandler;
