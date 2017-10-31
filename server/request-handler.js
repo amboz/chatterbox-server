@@ -61,8 +61,8 @@ var requestHandler = function(request, response) {
       console.log(responseBody.results);
       response.writeHead(statusCode, headers);
       //end the request
-      response.end('{"success": "hell yeag"}');
-      // response.end();
+      // response.end('{"success": "hell yeah"}');
+      response.end();
     });
   } else if (request.method === 'OPTIONS') {
     const statusCode = 200;

@@ -116,4 +116,43 @@ describe('Node Server Request Listener Function', function() {
       });
   });
 
+  it('Should have an array with the last element having the same id as the array length', function() {
+    var req = new stubs.request('/classes/messages', 'GET');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._responseCode).to.equal(200);
+    expect(res._ended).to.equal(true);
+
+    const arr = JSON.parse(res._data).results;
+    expect(arr[arr.length - 1].objectId).to.equal(arr.length);
+  });
+});
+
+describe('Options Request Handling', function() {
+  it('Should answer OPTIONS requests for /classes/messages with a 200 status code', function() {
+    // This is a fake server request. Normally, the server would provide this,
+    // but we want to test our function's behavior totally independent of the server code
+    var req = new stubs.request('/classes/messages', 'OPTIONS');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._responseCode).to.equal(200);
+    expect(res._ended).to.equal(true);
+  });
+
+  it('Should answer OPTIONS requests for /classes/messages with exhaustive list of methods', function() {
+    // This is a fake server request. Normally, the server would provide this,
+    // but we want to test our function's behavior totally independent of the server code
+    var req = new stubs.request('/classes/messages', 'OPTIONS');
+    var res = new stubs.response();
+
+    handler.requestHandler(req, res);
+
+    expect(res._headers['access-control-allow-methods']).to.equal('GET, POST, PUT, DELETE, OPTIONS');
+    expect(res._ended).to.equal(true);
+  });
+
 });
