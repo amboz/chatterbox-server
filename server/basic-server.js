@@ -1,13 +1,22 @@
 /* Import node's http module: */
 //**Express does not need http**
 // const http = require('http');
-//Import express, assign result of express fxn to app
+//Import express
 const express = require('express');
-const app = express();
 //Import body-parser for easy request handling (will call app.use)
 const bodyParser = require('body-parser');
+//Import path module for creating absolute path to client dir
+const path = require('path');
+//Create client path (abs path to client); __dirname refers to current filepath
+const publicPath = path.join(__dirname, '../client');
+//assign result of express fxn to app
+const app = express();
 //below will give each request a body property
 app.use(bodyParser.json());
+//index.html is default in client dir
+//call express.static to set a path for static files (html, css)
+app.use(express.static(publicPath));
+
 //require(...) is the same as exports; access prop on exports
 //**Express does not need cb below**
 // var handleRequest = require('./request-handler').requestHandler;
@@ -37,7 +46,6 @@ app.get('/classes/messages', function(req, res) {
 
 //append req to "db" for POST
 app.post('/classes/messages', function(req, res) {
-  console.log(req);
   let obj = req.body;
   // console.log(obj);
   obj.objectId = objectId++;
