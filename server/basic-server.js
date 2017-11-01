@@ -7,6 +7,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 //Import path module for creating absolute path to client dir
 const path = require('path');
+//Import fs module to write to local file
+const fs = require('fs');
 //Create client path (abs path to client); __dirname refers to current filepath
 const publicPath = path.join(__dirname, '../client');
 //assign result of express fxn to app
@@ -28,7 +30,7 @@ app.use(express.static(publicPath));
 // ports are 8080 and 1337.
 
 //below is our "db"
-const responseBody = {results: []};
+let responseBody = {results: []};
 let objectId = 1;
 const defaultCorsHeaders = {
   'access-control-allow-origin': '*',
@@ -41,7 +43,18 @@ const port = 3000;
 
 //return entire "db" for GET
 app.get('/classes/messages', function(req, res) {
-  res.status('200').header(defaultCorsHeaders).send(JSON.stringify(responseBody));
+  //fs read, on file named stuff
+  fs.readFile(__dirname + '/chat-records', 'utf8', (err, data) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    console.log(JSON.parse(data));
+    //must reassign "db" on each get request to handle cases...
+    //...where server has closed/reopened and responseBody set to empty value
+    responseBody = JSON.parse(data);
+    res.status('200').header(defaultCorsHeaders).send(data);
+  });
 });
 
 //append req to "db" for POST
@@ -50,7 +63,13 @@ app.post('/classes/messages', function(req, res) {
   // console.log(obj);
   obj.objectId = objectId++;
   responseBody.results.push(obj);
-  res.status('201').header(defaultCorsHeaders).send();
+  //fs write; will overwrite current file
+  fs.writeFile(__dirname + '/chat-records', JSON.stringify(responseBody), 'utf8', (err) => { 
+    if (err) {
+      console.log(err);
+    }
+    res.status('201').header(defaultCorsHeaders).send();
+  });
 });
 
 //respond with options for OPTIONS
